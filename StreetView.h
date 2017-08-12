@@ -18,9 +18,9 @@
 #include <kml/dom.h>
 #include <opencv2/opencv.hpp>
 
-//#ifndef STREETVIEW_API_KEY
+#ifndef STREETVIEW_API_KEY
 #define STREETVIEW_API_KEY ""
-//#endif
+#endif
 
 namespace AnnotatorLib {
 namespace ImageSet {

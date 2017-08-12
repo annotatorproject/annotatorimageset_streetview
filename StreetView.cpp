@@ -154,25 +154,34 @@ void StreetView::pointToUrl(const kmldom::PointPtr &point) {
 
 void StreetView::flyToPointerToUrl(const kmldom::GxFlyToPtr &point) {
   try {
-    const kmldom::LookAtPtr &lookAt =
-        kmldom::AsLookAt(point->get_abstractview());
+    std::string lat = "0.0";
+    std::string lon = "0.0";
+    std::string heading = "0.0";
+    std::string pitch = "0.0";
+    const auto &lookAt = kmldom::AsLookAt(point->get_abstractview());
     if (lookAt) {
-      std::string lat = std::to_string(lookAt->get_latitude());
-      std::string lon = std::to_string(lookAt->get_longitude());
+      lat = std::to_string(lookAt->get_latitude());
+      lon = std::to_string(lookAt->get_longitude());
 
-      std::string heading = "0.0";
       if (lookAt->has_heading())
         heading = std::to_string(lookAt->get_heading());
-      std::string pitch = "0.0";
-
-      std::string api_key = STREETVIEW_API_KEY;
-      std::string url =
-          "https://maps.googleapis.com/maps/api/"
-          "streetview?size=600x300&key=" +
-          api_key + "&heading=" + heading + "&pitch=" + pitch + "&location=" +
-          lat + "," + lon;
-      urls.push_back(url);
     }
+    const auto &camera = kmldom::AsCamera(point->get_abstractview());
+    if (camera) {
+      lat = std::to_string(camera->get_latitude());
+      lon = std::to_string(camera->get_longitude());
+
+      if (camera->has_heading())
+        heading = std::to_string(camera->get_heading());
+    }
+    std::string api_key = STREETVIEW_API_KEY;
+    std::string url =
+        "https://maps.googleapis.com/maps/api/"
+        "streetview?size=600x300&key=" +
+        api_key + "&heading=" + heading + "&pitch=" + pitch + "&location=" +
+        lat + "," + lon;
+    urls.push_back(url);
+
   } catch (...) {
   }
 }
